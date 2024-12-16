@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-import { DataTable, DataTableSelectionChangeEvent } from "primereact/datatable";
+import { DataTable, DataTableStateEvent, DataTableSelectionMultipleChangeEvent } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { PaginatorPageChangeEvent } from "primereact/paginator";
 
 interface Artwork {
   id: number;
@@ -34,7 +33,7 @@ const DataTableComponent = () => {
       setTotalRecords(data.pagination.total);
       setAllArtworks((prev) => [...prev, ...data.data]);
     } catch (error) {
-      console.error("Error fething data:", error);
+      console.error("Error fetching data:", error);
     }
   };
 
@@ -42,12 +41,13 @@ const DataTableComponent = () => {
     fetchArtworks(currentPage);
   }, [currentPage]);
 
-  const onPageChange = (e: PaginatorPageChangeEvent) => {
-    setCurrentPage(e.page);
-    fetchArtworks(e.page);
+  const onPageChange = (e: DataTableStateEvent) => {
+    const page = e.page ?? 0;
+    setCurrentPage(page);
+    fetchArtworks(page);
   };
 
-  const onSelectionChange = (e: DataTableSelectionChangeEvent) => {
+  const onSelectionChange = (e: DataTableSelectionMultipleChangeEvent<Artwork[]>) => {
     setSelectedArtworks(e.value);
   };
 
